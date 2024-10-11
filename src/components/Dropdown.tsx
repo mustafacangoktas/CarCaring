@@ -24,7 +24,10 @@ export default function Dropdown(props: Props) {
         shadowColor: 'transparent',
         backgroundColor: isDark ? '#474A58' : '#DEE9EA',
         borderBottomWidth: 1,
-        borderBottomColor: isDark ? '#B9D1FF' : '#949A9F',
+        borderBottomColor: isDark ?
+          visible ? '#b9d1ff' : '#959caa'
+          :
+          '#949A9F',
         borderTopRightRadius: 5,
         borderTopLeftRadius: 5,
         height: 55,

@@ -5,7 +5,8 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {BottomNavigation} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import RegisterScreen from './pages/Register.tsx';
-import Search from './pages/./Search.tsx';
+import Search from './pages/Search.tsx';
+import Services from './pages/services/Services.tsx';
 
 const Tab = createBottomTabNavigator();
 
@@ -73,6 +74,16 @@ export default function MyComponent() {
           tabBarLabel: 'Plaka Sorgu',
           tabBarIcon: ({color, size}: any) => {
             return <Icon name="account-search" size={size} color={color} />;
+          },
+        }}
+      />
+      <Tab.Screen
+        name="Services"
+        component={Services}
+        options={{
+          tabBarLabel: 'Hizmetler',
+          tabBarIcon: ({color, size}: any) => {
+            return <Icon name="file-cabinet" size={size} color={color} />;
           },
         }}
       />
