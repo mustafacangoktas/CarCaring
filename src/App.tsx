@@ -2,15 +2,24 @@ import React from 'react';
 
 import {CommonActions} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {BottomNavigation} from 'react-native-paper';
+import {BottomNavigation, Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import RegisterScreen from './pages/Register.tsx';
 import Search from './pages/Search.tsx';
 import Services from './pages/services/Services.tsx';
+import {View} from 'react-native';
+import LoginPage from './components/LoginPage.tsx';
+import Config from './config.ts';
+import Appointments from './pages/Appointments.tsx';
 
 const Tab = createBottomTabNavigator();
 
 export default function MyComponent() {
+  const [isLogged, setIsLogged] = React.useState(false);
+
+  if (!isLogged) {
+    return <LoginPage onLogin={() => setIsLogged(true)} />;
+  }
   return (
     <Tab.Navigator
       screenOptions={{
@@ -78,15 +87,27 @@ export default function MyComponent() {
         }}
       />
       <Tab.Screen
-        name="Services"
-        component={Services}
+        name="Appointments"
+        component={Appointments}
         options={{
-          tabBarLabel: 'Hizmetler',
+          tabBarLabel: 'Randevular',
           tabBarIcon: ({color, size}: any) => {
-            return <Icon name="file-cabinet" size={size} color={color} />;
+            return <Icon name="handshake" size={size} color={color} />;
           },
         }}
       />
+      {Config.IS_ADMIN && (
+        <Tab.Screen
+          name="Services"
+          component={Services}
+          options={{
+            tabBarLabel: 'Hizmetler',
+            tabBarIcon: ({color, size}: any) => {
+              return <Icon name="file-cabinet" size={size} color={color} />;
+            },
+          }}
+        />
+      )}
     </Tab.Navigator>
   );
 }

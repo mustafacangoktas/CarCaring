@@ -51,13 +51,23 @@ const ServiceList = () => {
 
   return (
     <>
-      <Editor show={editorVisible} defaultData={editorData} setRefresh={setRefresh} />
+      <Editor
+        show={editorVisible}
+        defaultData={editorData}
+        setRefresh={setRefresh}
+      />
       <DataTable>
         <DataTable.Header>
           <DataTable.Title>Marka</DataTable.Title>
           <DataTable.Title>Model</DataTable.Title>
           <DataTable.Title numeric>Hizmetler</DataTable.Title>
-          <DataTable.Title>İşlemler</DataTable.Title>
+          <DataTable.Title
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'flex-end',
+            }}>
+            İşlemler
+          </DataTable.Title>
         </DataTable.Header>
 
         {items.slice(from, to).map(item => (
@@ -65,13 +75,20 @@ const ServiceList = () => {
             <DataTable.Cell>{item.brand}</DataTable.Cell>
             <DataTable.Cell>{item.model}</DataTable.Cell>
             <DataTable.Cell numeric>{item.operations.length}</DataTable.Cell>
-            <DataTable.Cell>
+            <DataTable.Cell
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'flex-end',
+              }}>
               <Icon
                 size={20}
                 name="pencil"
                 onPress={() => {
                   setEditorData(item);
-                  setEditorVisible(true);
+                  setEditorVisible(false);
+                  setTimeout(() => {
+                    setEditorVisible(true);
+                  }, 100);
                 }}
               />
             </DataTable.Cell>
@@ -87,7 +104,7 @@ const ServiceList = () => {
           numberOfItemsPerPage={itemsPerPage}
           onItemsPerPageChange={onItemsPerPageChange}
           showFastPaginationControls
-          selectPageDropdownLabel={'Sayfa Seç'}
+          selectPageDropdownLabel={'Adet Seç'}
         />
       </DataTable>
 
@@ -103,7 +120,10 @@ const ServiceList = () => {
           mode="contained-tonal"
           onPress={() => {
             setEditorData(null);
-            setEditorVisible(true);
+            setEditorVisible(false);
+            setTimeout(() => {
+              setEditorVisible(true);
+            }, 100);
           }}>
           Hizmet Ekle
         </Button>

@@ -2,9 +2,9 @@ import * as React from 'react';
 import {Modal, Portal, Text, Button, TextInput} from 'react-native-paper';
 import {PlateRecord} from './SearchResult.tsx';
 import {Appearance, ScrollView, View} from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useEffect} from 'react';
 import Config from '../../config.ts';
+import DownloadButton from '../DownloadButton.tsx';
+import Util from '../../util.ts';
 
 type Props = {
   show: boolean;
@@ -50,113 +50,138 @@ const SearchViewer = (props: Props) => {
           padding: 60,
           backgroundColor: isDark ? '#22252e' : '#DEE9EA',
         }}>
-        <Text
-          style={{
-            fontWeight: 'bold',
-            textAlign: 'center',
-            marginTop: 20,
-            marginBottom: 30,
-            color: isDark ? '#A7ACBD' : '#4D5157',
-          }}
-          variant="displaySmall">
-          {props.defaultData?.plate} Sorgusu
-        </Text>
-
-        <View>
+        <ScrollView>
           <Text
             style={{
-              color: isDark ? '#A7ACBD' : '#4D5157',
+              fontWeight: 'bold',
               textAlign: 'center',
-              fontSize: 16,
-            }}>
-            {props.defaultData?.name} {props.defaultData?.surname}
-          </Text>
-          <Text
-            style={{
+              marginTop: 20,
+              marginBottom: 30,
               color: isDark ? '#A7ACBD' : '#4D5157',
-              textAlign: 'center',
-              fontSize: 16,
-            }}>
-            {props.defaultData?.phone}
-          </Text>
-          <Text
-            style={{
-              color: isDark ? '#A7ACBD' : '#4D5157',
-              textAlign: 'center',
-              fontSize: 16,
-            }}>
-            {props.defaultData?.brand} {props.defaultData?.model}
+            }}
+            variant="displaySmall">
+            {props.defaultData?.plate} Sorgusu
           </Text>
 
-          {
-            <ScrollView
-              style={{
-                maxHeight: 300,
-              }}>
-              {props.defaultData?.operations.map((operation, index) => (
-                <View
-                  key={index}
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    padding: 10,
-                    backgroundColor: isDark ? '#2C2F3D' : '#F9F9F9',
-                    margin: 5,
-                    borderRadius: 5,
-                  }}>
-                  <Text
-                    style={{
-                      color: isDark ? '#A7ACBD' : '#4D5157',
-                      fontSize: 16,
-                    }}>
-                    {operation.name} - {operation.price} TL
-                  </Text>
-                </View>
-              ))}
-            </ScrollView>
-          }
-        </View>
-        <View
-          style={{
-            marginTop: 50,
-            flexDirection: 'row',
-            justifyContent: 'center',
-            gap: 10,
-            flexWrap: 'wrap',
-          }}>
-          {saving ? (
+          <View>
             <Text
               style={{
                 color: isDark ? '#A7ACBD' : '#4D5157',
                 textAlign: 'center',
                 fontSize: 16,
               }}>
-              İşlem yapılıyor...
+              {props.defaultData?.name} {props.defaultData?.surname}
             </Text>
-          ) : (
-            <>
-              <Button
-                style={{width: '48%', padding: 5}}
-                icon="close"
-                mode="contained-tonal"
-                onPress={() => {
-                  props.setShown(false);
+            <Text
+              style={{
+                color: isDark ? '#A7ACBD' : '#4D5157',
+                textAlign: 'center',
+                fontSize: 16,
+              }}>
+              {props.defaultData?.phone}
+            </Text>
+            <Text
+              style={{
+                color: isDark ? '#A7ACBD' : '#4D5157',
+                textAlign: 'center',
+                fontSize: 16,
+              }}>
+              {props.defaultData?.brand} {props.defaultData?.model}
+            </Text>
+            <Text
+              style={{
+                color: isDark ? '#A7ACBD' : '#4D5157',
+                textAlign: 'center',
+                fontSize: 16,
+              }}>
+              Randevu:{' '}
+              {Util.prettyDate(props.defaultData?.appointment ?? new Date())}
+            </Text>
+            {
+              <ScrollView
+                style={{
+                  marginTop: 20,
+                  maxHeight: 300,
                 }}>
-                Geri Dön
-              </Button>
-              <Button
-                style={{width: '48%', padding: 5}}
-                icon="delete"
-                mode="contained-tonal"
-                onPress={() => {
-                  deleteRecord();
+                {props.defaultData?.operations.map((operation, index) => (
+                  <View
+                    key={index}
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      padding: 10,
+                      backgroundColor: isDark ? '#2C2F3D' : '#F9F9F9',
+                      margin: 5,
+                      borderRadius: 5,
+                    }}>
+                    <Text
+                      style={{
+                        color: isDark ? '#A7ACBD' : '#4D5157',
+                        fontSize: 16,
+                      }}>
+                      {operation.name} - {operation.price} TL
+                    </Text>
+                  </View>
+                ))}
+              </ScrollView>
+            }
+          </View>
+          <View
+            style={{
+              marginTop: 50,
+              flexDirection: 'row',
+              justifyContent: 'center',
+              gap: 10,
+              flexWrap: 'wrap',
+            }}>
+            {saving ? (
+              <Text
+                style={{
+                  color: isDark ? '#A7ACBD' : '#4D5157',
+                  textAlign: 'center',
+                  fontSize: 16,
                 }}>
-                Sil
-              </Button>
-            </>
-          )}
-        </View>
+                İşlem yapılıyor...
+              </Text>
+            ) : (
+              <>
+                <Button
+                  style={{width: '48%', padding: 5}}
+                  icon="close"
+                  mode="contained-tonal"
+                  onPress={() => {
+                    props.setShown(false);
+                  }}>
+                  Geri Dön
+                </Button>
+                {Config.IS_ADMIN && (
+                  <Button
+                    style={{width: '48%', padding: 5}}
+                    icon="delete"
+                    mode="contained-tonal"
+                    onPress={() => {
+                      deleteRecord();
+                    }}>
+                    Sil
+                  </Button>
+                )}
+                <DownloadButton
+                  fileUrl={
+                    Config.API_URL +
+                    '/records/' +
+                    props.defaultData?._id +
+                    '/download'
+                  }
+                  fileName={
+                    props.defaultData?.plate! + props.defaultData?._id + '.xlsx'
+                  }
+                  label={'Kaydet'}
+                />
+              </>
+            )}
+          </View>
+        </ScrollView>
       </Modal>
     </Portal>
   );

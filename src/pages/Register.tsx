@@ -4,6 +4,8 @@ import React, {useEffect} from 'react';
 import Dropdown from '../components/Dropdown.tsx';
 import {Service} from '../components/services/ServiceList.tsx';
 import Config from '../config.ts';
+import SuccessPage from '../components/records/Success.tsx';
+import DatePicker from 'react-native-date-picker';
 
 export default function Register() {
   const [name, setName] = React.useState('');
@@ -16,12 +18,22 @@ export default function Register() {
     {name: string; price: number}[]
   >([]);
   const [refresh, setRefresh] = React.useState(false);
+  const [appointment, setAppointment] = React.useState(new Date());
 
   const colorScheme = Appearance.getColorScheme();
-  const [firstPage, setFirstPage] = React.useState(true);
+  const [page, setPage] = React.useState<number>(0);
   const isDark = colorScheme === 'dark';
 
   const [items, setItems] = React.useState<Service[]>([]);
+  const [success, setSuccess] = React.useState(false);
+
+  const [error, setOriginError] = React.useState('');
+  const setError = (text: string) => {
+    setOriginError(text);
+    setTimeout(() => {
+      setOriginError('');
+    }, 3000);
+  };
 
   const clear = () => {
     setName('');
@@ -32,7 +44,7 @@ export default function Register() {
     setPlate('');
     setOperations([]);
     setRefresh(!refresh);
-    setFirstPage(true);
+    setPage(0);
   };
 
   useEffect(() => {
@@ -142,7 +154,24 @@ export default function Register() {
           style={{width: '48%', padding: 5}}
           icon="arrow-right"
           mode="contained-tonal"
-          onPress={() => setFirstPage(false)}>
+          onPress={() => {
+            if (
+              name === '' ||
+              surname === '' ||
+              brand === '' ||
+              model === '' ||
+              phone === '' ||
+              plate === ''
+            ) {
+              setError('Tüm alanları doldurmalısınız.');
+              return;
+            }
+            if (phone.length !== 11) {
+              setError('Telefon numarası 11 haneli olmalıdır.');
+              return;
+            }
+            setPage(1);
+          }}>
           İleri
         </Button>
       </View>
@@ -189,8 +218,6 @@ export default function Register() {
                 value={
                   operations.find(op => op.name === operation.name) !==
                   undefined
-                    ? true
-                    : false
                 }
                 onValueChange={() => {
                   const newOperations = [...operations];
@@ -243,7 +270,62 @@ export default function Register() {
           style={{width: '48%', padding: 5}}
           icon="arrow-left"
           mode="contained-tonal"
-          onPress={() => setFirstPage(true)}>
+          onPress={() => setPage(1)}>
+          Geri
+        </Button>
+        <Button
+          style={{width: '48%', padding: 5}}
+          icon="arrow-right"
+          mode="contained-tonal"
+          onPress={() => {
+            if (operations.length === 0) {
+              setError('En az bir işlem seçmelisiniz.');
+              return;
+            }
+            setPage(2);
+          }}>
+          İleri
+        </Button>
+      </View>
+    </>
+  );
+
+  const thirdPageInputs = (
+    <>
+      <View
+        style={{
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginTop: 20,
+        }}>
+        <Text
+          style={{
+            color: isDark ? '#A7ACBD' : '#4D5157',
+            textAlign: 'center',
+            fontSize: 20,
+            textTransform: 'uppercase',
+          }}>
+          Randevu Tarihi
+        </Text>
+        <DatePicker
+          mode="date"
+          date={appointment}
+          onDateChange={setAppointment}
+        />
+      </View>
+      <View
+        style={{
+          marginTop: 50,
+          flexDirection: 'row',
+          justifyContent: 'center',
+          gap: 10,
+        }}>
+        <Button
+          style={{width: '48%', padding: 5}}
+          icon="arrow-left"
+          mode="contained-tonal"
+          onPress={() => setPage(0)}>
           Geri
         </Button>
         <Button
@@ -265,10 +347,12 @@ export default function Register() {
                 phone: phone,
                 plate: plate,
                 operations: operations,
+                appointment: appointment,
               }),
             }).then(response => {
               if (response.status === 200) {
                 clear();
+                setSuccess(true);
               }
             });
           }}>
@@ -285,6 +369,7 @@ export default function Register() {
         height: '100%',
         backgroundColor: isDark ? '#22252e' : '#DEE9EA',
       }}>
+      <SuccessPage onClosed={() => setSuccess(false)} show={success} />
       <Text
         style={{
           fontWeight: 'bold',
@@ -296,7 +381,19 @@ export default function Register() {
         variant="displaySmall">
         Araç Kayıt
       </Text>
-      {firstPage ? firstPageInputs : secondPageInputs}
+      {error && (
+        <Text
+          style={{
+            color: 'red',
+            textAlign: 'center',
+            marginBottom: 20,
+          }}>
+          {error}
+        </Text>
+      )}
+      {page === 0 && firstPageInputs}
+      {page === 1 && secondPageInputs}
+      {page === 2 && thirdPageInputs}
       <View style={{marginTop: 70}}></View>
     </ScrollView>
   );

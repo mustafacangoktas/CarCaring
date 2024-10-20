@@ -3,6 +3,7 @@ import {Button, Checkbox, DataTable, Text, TextInput} from 'react-native-paper';
 import React, {useEffect} from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import SearchViewer from './SearchViewer.tsx';
+import Util from '../../util.ts';
 
 export type PlateRecord = {
   _id?: string;
@@ -12,6 +13,7 @@ export type PlateRecord = {
   phone: string;
   brand: string;
   model: string;
+  appointment: Date;
   operations: {name: string; price: number}[];
   date: string;
 };
@@ -55,7 +57,8 @@ export default function SearchResult(props: {records: PlateRecord[]}) {
             <DataTable.Cell>
               {item.brand} {item.model}
             </DataTable.Cell>
-            <DataTable.Cell>{item.date}</DataTable.Cell>
+            <DataTable.Cell>{Util.prettyDate(item.date)} {Util.prettyTime(item.date)}
+            </DataTable.Cell>
             <DataTable.Cell numeric>
               <Icon
                 size={20}
@@ -78,9 +81,10 @@ export default function SearchResult(props: {records: PlateRecord[]}) {
           numberOfItemsPerPage={itemsPerPage}
           onItemsPerPageChange={onItemsPerPageChange}
           showFastPaginationControls
-          selectPageDropdownLabel={'Sayfa Seç'}
+          selectPageDropdownLabel={'Adet Seç'}
         />
       </DataTable>
+      <View style={{marginTop: 70}}></View>
     </>
   );
 }

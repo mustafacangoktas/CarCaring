@@ -27,7 +27,7 @@ export default function Services() {
 
   return (
     <>
-      <View
+      <ScrollView
         style={{
           padding: 30,
           height: '100%',
@@ -42,7 +42,7 @@ export default function Services() {
             color: isDark ? '#A7ACBD' : '#4D5157',
           }}
           variant="displaySmall">
-          Plaka Sorgulama
+          Kayıt Sorgula
         </Text>
         {result ? (
           <>
@@ -82,7 +82,7 @@ export default function Services() {
           <>
             <TextInput
               style={{marginTop: 20}}
-              label="Plaka"
+              label="Plaka, İsim veya Telefon"
               defaultValue={plate}
               onChangeText={text => setPlate(text)}
             />
@@ -106,7 +106,7 @@ export default function Services() {
           </>
         )}
         <View style={{marginTop: 70}}></View>
-      </View>
+      </ScrollView>
     </>
   );
 }
